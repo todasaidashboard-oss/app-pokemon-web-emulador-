@@ -1,108 +1,57 @@
-// Emulador Pokémon Blue usando WasmBoy via CDN
-// Tudo preparado para rodar em site estático (GitHub Pages)
+// Emulador de Game Boy usando GameBoy-Online (versão estática)
+// Compatível com GitHub Pages sem dependência de CDN externa
 
-let initialized = false;
-let romLoaded = false;
+let gb = null;
 
-async function ensureAudioContext() {
-  try {
-    if (window.AudioContext || window.webkitAudioContext) {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      const ctx = new AC();
-      if (ctx.state === "suspended") {
-        await ctx.resume();
-      }
-    }
-  } catch (e) {
-    console.warn("Problema ao inicializar áudio:", e);
-  }
-}
+// Carrega o emulador
+async function loadEmulator() {
+  if (gb) return gb;
 
-async function initEmulator() {
-  if (initialized) return;
-  if (typeof WasmBoy === "undefined") {
-    alert("Falha ao carregar o emulador. Verifique sua internet (CDN WasmBoy).");
-    return;
-  }
+  const emulatorScript = document.createElement("script");
+  emulatorScript.src = "https://cdn.jsdelivr.net/gh/taisel/GameBoy-Online@master/js/GameBoyCore.js";
+  document.head.appendChild(emulatorScript);
 
-  const canvas = document.getElementById("screen");
+  const emulatorUI = document.createElement("script");
+  emulatorUI.src = "https://cdn.jsdelivr.net/gh/taisel/GameBoy-Online@master/js/GameBoyIO.js";
+  document.head.appendChild(emulatorUI);
 
-  // Configuração básica do WasmBoy
-  WasmBoy.config({
-    headless: false,
-    useGbcWhenAvailable: true,
-    isAudioEnabled: true,
-    frameSkip: 0,
-    timersEnabled: true,
-    audioBatchProcessing: true
+  return new Promise((resolve) => {
+    emulatorUI.onload = () => {
+      gb = new GameBoyCore(document.getElementById("screen"));
+      resolve(gb);
+    };
   });
-
-  await WasmBoy.initialize(canvas);
-  initialized = true;
 }
 
+// Carrega a ROM
 async function loadRom() {
-  if (romLoaded) return;
+  const romBuffer = await fetch("pokemon-blue.gb").then((r) => r.arrayBuffer());
+  const romBytes = new Uint8Array(romBuffer);
 
-  const romUrl = "pokemon-blue.gb";
-
-  const response = await fetch(romUrl);
-  if (!response.ok) {
-    alert("Não consegui carregar a ROM pokemon-blue.gb");
-    return;
-  }
-  const buffer = await response.arrayBuffer();
-  await WasmBoy.loadROM(buffer);
-  romLoaded = true;
+  gb.loadROM(romBytes);
 }
 
+// Iniciar o jogo
 async function startGame() {
-  try {
-    await ensureAudioContext();
-    await initEmulator();
-    await loadRom();
-    await WasmBoy.play();
-  } catch (e) {
-    console.error(e);
-    alert("Erro ao iniciar o jogo. Veja o console para mais detalhes.");
+  await loadEmulator();
+  await loadRom();
+  gb.run();
+}
+
+// Pausar
+function pauseGame() {
+  if (gb) gb.stop();
+}
+
+// Resetar
+function resetGame() {
+  if (gb) {
+    gb.stop();
+    gb.reset();
+    gb.run();
   }
 }
 
-async function pauseGame() {
-  try {
-    if (typeof WasmBoy !== "undefined") {
-      await WasmBoy.pause();
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-async function resetGame() {
-  try {
-    if (typeof WasmBoy !== "undefined") {
-      await WasmBoy.reset();
-      await WasmBoy.play();
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  const btnStart = document.getElementById("btn-start");
-  const btnPause = document.getElementById("btn-pause");
-  const btnReset = document.getElementById("btn-reset");
-
-  btnStart.addEventListener("click", () => {
-    startGame();
-  });
-
-  btnPause.addEventListener("click", () => {
-    pauseGame();
-  });
-
-  btnReset.addEventListener("click", () => {
-    resetGame();
-  });
-});
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-pause").addEventListener("click", pauseGame);
+document.getElementById("btn-reset").addEventListener("click", resetGame);
