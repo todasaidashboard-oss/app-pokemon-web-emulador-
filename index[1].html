@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pokémon Blue - Jogar Online</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Emulador Game Boy via CDN (WasmBoy) -->
+  <script src="https://unpkg.com/wasmboy@latest/dist/wasmboy.js"></script>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Pokémon Blue</h1>
+      <p class="subtitle">Versão para jogar direto no navegador (GitHub Pages)</p>
+    </header>
+
+    <main class="layout">
+      <section class="card screen-card">
+        <canvas id="screen" width="480" height="432"></canvas>
+        <div class="actions">
+          <button id="btn-start">▶ Jogar / Continuar</button>
+          <button id="btn-pause">⏸ Pausar</button>
+          <button id="btn-reset">⟲ Resetar Jogo</button>
+        </div>
+        <p class="hint">
+          Se a tela estiver preta, clique em <strong>Jogar</strong> e espere alguns segundos para o emulador carregar a ROM.
+        </p>
+      </section>
+
+      <section class="card info-card">
+        <h2>Controles</h2>
+        <ul>
+          <li><strong>Setas</strong> – Direcionais</li>
+          <li><strong>Z</strong> – Botão A</li>
+          <li><strong>X</strong> – Botão B</li>
+          <li><strong>Enter</strong> – Start</li>
+          <li><strong>Backspace</strong> – Select</li>
+        </ul>
+
+        <h2>Sobre</h2>
+        <p>
+          Este projeto foi preparado para rodar em um site estático (como o GitHub Pages),
+          usando um emulador de Game Boy em JavaScript (WasmBoy).
+        </p>
+
+        <h2>Baixar ROM</h2>
+        <p>Se quiser jogar em outro emulador, você pode baixar a ROM original que está sendo usada aqui:</p>
+        <p class="center">
+          <a class="button" href="pokemon-blue.gb" download>Baixar Pokémon Blue (.gb)</a>
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>Projeto estático preparado para funcionar direto no GitHub Pages, sem precisar editar código.</p>
+    </footer>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
