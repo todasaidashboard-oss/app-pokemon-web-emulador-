@@ -58,5 +58,22 @@
   </div>
 
   <script src="main.js"></script>
+  <script>
+document.getElementById("btn-start").addEventListener("click", async () => {
+    if (!window.player) {
+        window.player = await loadEmulator();
+    }
+    window.player.play();
+});
+
+document.getElementById("btn-pause").addEventListener("click", () => {
+    if (window.player) window.player.pause();
+});
+
+document.getElementById("btn-reset").addEventListener("click", () => {
+    if (window.player) window.player.reset();
+});
+</script>
+  
 </body>
 </html>
