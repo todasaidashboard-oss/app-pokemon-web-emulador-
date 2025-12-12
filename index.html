@@ -16,17 +16,16 @@
     </header>
 
     <main class="layout">
-      <section class="card screen-card">
-        <canvas id="screen" width="480" height="432"></canvas>
-        <div class="actions">
-          <button id="btn-start">▶ Jogar / Continuar</button>
-          <button id="btn-pause">⏸ Pausar</button>
-          <button id="btn-reset">⟲ Resetar Jogo</button>
-        </div>
-        <p class="hint">
-          Se a tela estiver preta, clique em <strong>Jogar</strong> e espere alguns segundos para o emulador carregar a ROM.
-        </p>
-      </section>
+<section class="card screen-card">
+  <!-- EM VEZ DO CANVAS, FICA ASSIM: -->
+  <iframe
+    title="Pokemon Blue"
+    width="480"
+    height="432"
+    allowfullscreen="true"
+    src="https://wasmboy.app/iframe/?rom-url=https://todasaidashboard-oss.github.io/app-pokemon-web-emulador-/pokemon-blue.gb&rom-name=Pokemon%20Blue">
+  </iframe>
+</section>
 
       <section class="card info-card">
         <h2>Controles</h2>
@@ -57,7 +56,6 @@
     </footer>
   </div>
 
-  <script src="main.js"></script>
   <script>
 document.getElementById("btn-start").addEventListener("click", async () => {
     if (!window.player) {
